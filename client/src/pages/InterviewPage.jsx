@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Step1Setup from '../components/Step1Setup.jsx';
+import Step1Setup from '../components/Step1SetUp.jsx';
 import Step2Interview from '../components/Step2Interview.jsx';
 import Step3Report from '../components/Step3Report.jsx';
 
