@@ -319,41 +319,33 @@ const Step2Interview = ({ interviewData, onFinish }) => {
     recognitionRef.current = recognition;
   }, []);
 
-  const finishInterview = async () => {
-  stopMic();
-  setIsMicOn(false);
-  try {
-    const result = await axios.post(
-      ServerUrl + "/api/interview/finish",
-      {
-        interviewId,
-        questions: answeredQuestions,
-      },
-      { withCredentials: true },
-    );
+   const finishInterview = async () => {
+    stopMic();
+    setIsMicOn(false);
+    try {
+      const result = await axios.post(
+        ServerUrl + "/api/interview/finish",
+        {
+          interviewId,
+          questions: answeredQuestions,
+        },
+        { withCredentials: true },
+      );
 
-    // ✅ Compute finalScore if missing
-    const normalizedData = {
-      ...result.data,
-      finalScore:
-        result.data.finalScore ??
-        (result.data.questionWiseScore?.reduce((sum, q) => sum + (q.score || 0), 0) /
-          (result.data.questionWiseScore?.length || 1)),
-    };
+      console.log("==== Final Interview Summary ====");
+      console.log("Final Score:", result.data.finalScore);
+      console.log("Confidence:", result.data.confidence);
+      console.log("Communication:", result.data.communication);
+      console.log("Correctness:", result.data.correctness);
+      console.log("Question-wise Score:", result.data.questionWiseScore);
+      console.log("=================================");
 
-    console.log("==== Final Interview Summary ====");
-    console.log("Final Score:", normalizedData.finalScore);
-    console.log("Confidence:", normalizedData.confidence);
-    console.log("Communication:", normalizedData.communication);
-    console.log("Correctness:", normalizedData.correctness);
-    console.log("Question-wise Score:", normalizedData.questionWiseScore);
-    console.log("=================================");
-
-    onFinish(normalizedData); // ✅ Pass normalized data
-  } catch (error) {
-    console.error("Finish error details:", error.response?.data);
-  }
-};
+      console.log(result.data);
+      onFinish(result.data);
+    } catch (error) {
+      console.error("Finish error details:", error.response?.data);
+    }
+  };
 
 
   useEffect(() => {
